@@ -1,0 +1,45 @@
+version: "3"
+
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root12'
+      MYSQL_DATABASE: 'db'
+    ports:
+      - '3306:3306'
+    networks:
+      - my_network
+    container_name: db
+
+  fill_data_app:
+    build: ./fill_data/
+    volumes:
+      - .:/data
+    command: sh -c "sleep 10s ; python fill_data.py"
+    depends_on:
+      - db
+    networks:
+      - my_network
+
+  server:
+    build: ./server/
+    command: sh -c "sleep 10s ; python app.py"
+    depends_on:
+      - db
+    networks:
+      - my_network
+    ports:
+      - '8000:8000'
+
+
+
+networks:
+  my_network:
+    name: my_network
+
+volumes:
+  data_path: {}
