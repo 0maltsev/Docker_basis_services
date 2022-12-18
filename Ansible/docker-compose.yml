@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+
+  app:
+    build: ./app
+    image: app
+    container_name: app
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./app:/app
+
+  ansible:
+    build: ./ansible_config
+    command: ansible-playbook docker-ansible-playbook.yml -i ansible-inventory.yml
+    volumes:
+      - /var/run/docker.sock://var/run/docker.sock
+      - ./app:/app
+      

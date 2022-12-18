@@ -1,0 +1,15 @@
+---
+- name: Docker
+  hosts: 127.0.0.1
+
+  tasks:
+    - name: Docker installing
+      pip:
+        name: docker
+
+    - docker_container:
+        name: app
+        image: app
+        ports:
+          - 8082:8082
+        command: python3 app.py
